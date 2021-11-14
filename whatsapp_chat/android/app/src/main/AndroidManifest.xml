@@ -1,8 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.snapsid.whatsapp_chat">
+
    <application
-        android:label="whatsapp_chat"
-        android:icon="@mipmap/ic_launcher">
+        android:label="WhatsApp Direct"
+        android:icon="@drawable/icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

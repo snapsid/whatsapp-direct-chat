@@ -1,6 +1,6 @@
-import 'package:country_code_picker/country_code.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() {
@@ -27,6 +27,7 @@ class _MyClassState extends State<MyClass> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("WhatsApp Direct"),
+        backgroundColor: Colors.teal,
       ),
       body: Center(
         child: Container(
@@ -39,7 +40,6 @@ class _MyClassState extends State<MyClass> {
                   onChanged: (val) {
                     code = val.toString();
                   },
-
                   // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
                   initialSelection: 'IN',
                   favorite: ['+91', 'IN'],
@@ -52,11 +52,18 @@ class _MyClassState extends State<MyClass> {
                 ),
               ),
               TextField(
+                keyboardType: TextInputType.phone,
                 onChanged: (value) {
                   phone = value;
                 },
-                decoration: const InputDecoration(
-                    enabledBorder: OutlineInputBorder(), hintText: "Phone"),
+                decoration: InputDecoration(
+                    fillColor: Colors.teal,
+                    focusColor: Colors.teal,
+                    hoverColor: Colors.teal,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    hintText: "Phone"),
               ),
               const SizedBox(
                 height: 20,
@@ -65,27 +72,56 @@ class _MyClassState extends State<MyClass> {
                 onChanged: (value) {
                   msg = value;
                 },
-                decoration: const InputDecoration(
-                    enabledBorder: OutlineInputBorder(), hintText: "Message"),
+                decoration: InputDecoration(
+                    fillColor: Colors.teal,
+                    focusColor: Colors.teal,
+                    hoverColor: Colors.teal,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    hintText: "Message"),
               ),
               const SizedBox(
                 height: 20,
               ),
-              ElevatedButton(
+              Material(
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.teal,
+                elevation: 5,
+                child: MaterialButton(
+                  child: const Text(
+                    'Send',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   onPressed: () async {
                     // https://wa.me/1XXXXXXXXXX?text=I'm%20interested%20in%20your%20car%20for%20sale
 
-                    code = code.replaceAll("+", "");
+                    if (phone.length < 10) {
+                      Fluttertoast.showToast(
+                          msg: "Enter a valid phone number",
+                          toastLength: Toast.LENGTH_LONG,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 2,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          webPosition: "center",
+                          fontSize: 16.0);
+                    } else {
+                      code = code.replaceAll("+", "");
 
-                    var url = "https://wa.me/$code$phone?text=$msg";
-                    if (await canLaunch(url))
-                      await launch(url);
-                    else
-                      // can't launch url, there is some error
-                      throw "Could not launch $url";
-                    print(code);
+                      var url = "https://wa.me/$code$phone?text=$msg";
+                      if (await canLaunch(url)) {
+                        await launch(url);
+                      } else {
+                        throw "Could not launch $url";
+                      }
+                      // print(code);
+                    }
                   },
-                  child: const Text('Send'))
+                  minWidth: 130,
+                  height: 40,
+                ),
+              ),
             ],
           ),
         ),
